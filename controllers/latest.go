@@ -8,9 +8,9 @@ import (
 )
 
 //LatestRates grab rates latest from db
-func (app *AppHandler) LatestRates(w http.ResponseWriter, r *http.Request) {
+func (app *AppHandler) LatestRates(w http.ResponseWriter, r *http.Request, dt string) {
 	latest := models.NewRateLatest()
-	results := latest.Get(AppService.Context, AppService.DB)
+	results := latest.Get(AppService.Context, AppService.DB, dt)
 
 	//NO_RECORDS
 	if results == nil {

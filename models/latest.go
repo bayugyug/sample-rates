@@ -13,10 +13,16 @@ func NewRateLatest() *RateLatest {
 	return &RateLatest{}
 }
 
-func (rate *RateLatest) Get(ctx context.Context, db *sql.DB) *RatesLatestResponse {
+func (rate *RateLatest) Get(ctx context.Context, db *sql.DB, whichdt string) *RatesLatestResponse {
+
 	var rates *RatesLatestResponse
-	//fmt
-	r := `SELECT 
+	var rows *sql.Rows
+	var err error
+	var r string
+
+	//run
+	if whichdt == "" {
+		r = `SELECT 
 		IFNULL(a.base,''), 
 		IFNULL(a.currency,''), 
 		IFNULL(a.rate,0.0)
@@ -26,7 +32,19 @@ func (rate *RateLatest) Get(ctx context.Context, db *sql.DB) *RatesLatestRespons
 			SELECT MAX(b.rate_dt) FROM rates b
 		)
 		ORDER BY a.currency ASC`
-	rows, err := db.QueryContext(ctx, r)
+		rows, err = db.QueryContext(ctx, r)
+	} else {
+		r = `SELECT 
+		IFNULL(a.base,''), 
+		IFNULL(a.currency,''), 
+		IFNULL(a.rate,0.0)
+		FROM rates a
+		WHERE 1=1
+		AND a.rate_dt = ?
+		ORDER BY a.currency ASC`
+		rows, err = db.QueryContext(ctx, r, whichdt)
+	}
+
 	if err != nil {
 		log.Println("SQL_ERROR::", err)
 		return rates

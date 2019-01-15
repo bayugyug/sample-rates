@@ -43,8 +43,9 @@ func (app *AppHandler) RatesHandler(w http.ResponseWriter, r *http.Request) {
 		app.Handler404(w, r)
 		return
 	}
-	//	row, err := driver.GetDriver(ApiService.Context, ApiService.DB, data.MobileDriver)
-	app.ReplyErrContent(w, r, http.StatusOK, "tran-date:"+tdate)
+	//per date
+	utils.Dumper("tran-date:" + tdate)
+	app.LatestRates(w, r, tdate)
 }
 
 func (app *AppHandler) LatestRatesHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +56,7 @@ func (app *AppHandler) LatestRatesHandler(w http.ResponseWriter, r *http.Request
 	//check it
 	qpath := r.URL.Path[len("/rates/"):]
 	utils.Dumper("latest:" + qpath)
-	app.LatestRates(w, r)
+	app.LatestRates(w, r, "")
 }
 
 func (app *AppHandler) AnalyzeRatesHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +66,6 @@ func (app *AppHandler) AnalyzeRatesHandler(w http.ResponseWriter, r *http.Reques
 	}
 	//check it
 	qpath := r.URL.Path[len("/rates/"):]
-
 	app.ReplyErrContent(w, r, http.StatusOK, "analyze:"+qpath)
 }
 
