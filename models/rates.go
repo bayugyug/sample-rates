@@ -4,21 +4,21 @@ package models
 
 //RatesLatestResponse for /latest
 type RatesLatestResponse struct {
-	Base  string             `json:"base,omitempty"`
-	Rates map[string]float64 `json:"rates,omitempty"`
+	Base  string             `json:"base"`
+	Rates map[string]float64 `json:"rates"`
 }
 
 //RatesAnalyzeResponse for /analyze
 type RatesAnalyzeResponse struct {
-	Base         string             `json:"base,omitempty"`
-	RatesAnalyze map[string]RateAve `json:"rates_analyze,omitempty"`
+	Base         string             `json:"base"`
+	RatesAnalyze map[string]RateAve `json:"rates_analyze"`
 }
 
 //RateAve map of min/max/ave
 type RateAve struct {
-	Min float64 `json:"min,omitempty"`
-	Max float64 `json:"max,omitempty"`
-	Avg float64 `json:"avg,omitempty"`
+	Min float64 `json:"min"`
+	Max float64 `json:"max"`
+	Avg float64 `json:"avg"`
 }
 
 //for the xml parsers
