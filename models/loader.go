@@ -54,8 +54,7 @@ func (rate *RateLoader) Load(ctx context.Context, db *sql.DB, endpoints []config
 	return all
 }
 
-
-func (rate *RateLoader) Save(ctx context.Context, db *sql.DB, rbase,rdate, rcurrency string, rrate float64)int64 {
+func (rate *RateLoader) Save(ctx context.Context, db *sql.DB, rbase, rdate, rcurrency string, rrate float64) int64 {
 	//fmt
 	r := `INSERT INTO rates (
 		base, 
@@ -71,7 +70,7 @@ func (rate *RateLoader) Save(ctx context.Context, db *sql.DB, rbase,rdate, rcurr
 			rate     = ? , 
 			modified_dt = Now() `
 	//exec
-	result, err := db.Exec(r,
+	result, err := db.ExecContext(ctx, r,
 		rbase,
 		rdate,
 		rcurrency,

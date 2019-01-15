@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/bayugyug/sample-rates/config"
+	"github.com/bayugyug/sample-rates/utils"
 )
 
 const (
@@ -23,7 +24,7 @@ type AppHandler struct {
 
 func (app *AppHandler) WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 	//reply
-	app.ReplyContent(w, r, http.StatusOK, "Welcome!")
+	app.ReplyErrContent(w, r, http.StatusOK, "Welcome!")
 }
 
 func (app *AppHandler) RatesHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +44,7 @@ func (app *AppHandler) RatesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//	row, err := driver.GetDriver(ApiService.Context, ApiService.DB, data.MobileDriver)
-	app.ReplyContent(w, r, http.StatusOK, "tran-date:"+tdate)
+	app.ReplyErrContent(w, r, http.StatusOK, "tran-date:"+tdate)
 }
 
 func (app *AppHandler) LatestRatesHandler(w http.ResponseWriter, r *http.Request) {
@@ -53,8 +54,8 @@ func (app *AppHandler) LatestRatesHandler(w http.ResponseWriter, r *http.Request
 	}
 	//check it
 	qpath := r.URL.Path[len("/rates/"):]
-
-	app.ReplyContent(w, r, http.StatusOK, "latest:"+qpath)
+	utils.Dumper("latest:" + qpath)
+	app.LatestRates(w, r)
 }
 
 func (app *AppHandler) AnalyzeRatesHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,24 +66,30 @@ func (app *AppHandler) AnalyzeRatesHandler(w http.ResponseWriter, r *http.Reques
 	//check it
 	qpath := r.URL.Path[len("/rates/"):]
 
-	app.ReplyContent(w, r, http.StatusOK, "analyze:"+qpath)
+	app.ReplyErrContent(w, r, http.StatusOK, "analyze:"+qpath)
 }
 
 func (app *AppHandler) Handler404(w http.ResponseWriter, r *http.Request) {
 	//404
-	app.ReplyContent(w, r, http.StatusNotFound, "Invalid Endpoint")
+	app.ReplyErrContent(w, r, http.StatusNotFound, "Invalid Endpoint")
 }
 
-//ReplyContent send 204 msg
+//ReplyErrContent send 204 msg
 //
 //  http.StatusNoContent
 //  http.StatusText(http.StatusNoContent)
-func (app *AppHandler) ReplyContent(w http.ResponseWriter, r *http.Request, code int, msg string) {
+func (app *AppHandler) ReplyErrContent(w http.ResponseWriter, r *http.Request, code int, msg string) {
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AppResponse{
 		Code:   code,
 		Status: msg,
 	})
+}
+
+//ReplyContent send 200 with data
+func (app *AppHandler) ReplyContent(w http.ResponseWriter, r *http.Request, reply string) {
+	w.Header().Add("Content-Type", "application/json")
+	w.Write([]byte(reply))
 }
 
 //MethodAllowed check method here
@@ -91,33 +98,31 @@ func (app *AppHandler) MethodAllowed(w http.ResponseWriter, r *http.Request, met
 	switch r.Method {
 	case http.MethodGet:
 		if !strings.EqualFold(http.MethodGet, method) {
-			app.ReplyContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
+			app.ReplyErrContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 			return false
 		}
 		return true
 	case http.MethodPost:
 		if !strings.EqualFold(http.MethodPost, method) {
-			app.ReplyContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
+			app.ReplyErrContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 			return false
 		}
 		return true
 	case http.MethodPut:
 		if !strings.EqualFold(http.MethodPut, method) {
-			app.ReplyContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
+			app.ReplyErrContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 			return false
 		}
 		return true
 	case http.MethodDelete:
 		if !strings.EqualFold(http.MethodDelete, method) {
-			app.ReplyContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
+			app.ReplyErrContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 			return false
 		}
 		return true
 	default:
-		app.ReplyContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
+		app.ReplyErrContent(w, r, http.StatusMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed))
 		return false
 
 	}
 }
-
-

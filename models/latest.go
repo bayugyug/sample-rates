@@ -1,0 +1,56 @@
+package models
+
+import (
+	"context"
+	"database/sql"
+	"log"
+)
+
+type RateLatest struct {
+}
+
+func NewRateLatest() *RateLatest {
+	return &RateLatest{}
+}
+
+func (rate *RateLatest) Get(ctx context.Context, db *sql.DB) *RatesLatestResponse {
+	var rates *RatesLatestResponse
+	//fmt
+	r := `SELECT 
+		IFNULL(a.base,''), 
+		IFNULL(a.currency,''), 
+		IFNULL(a.rate,0.0)
+		FROM rates a
+		WHERE 1=1
+		AND a.rate_dt IN (
+			SELECT MAX(b.rate_dt) FROM rates b
+		)
+		ORDER BY a.currency ASC`
+	rows, err := db.QueryContext(ctx, r)
+	if err != nil {
+		log.Println("SQL_ERROR::", err)
+		return rates
+	}
+	defer rows.Close()
+	rates = &RatesLatestResponse{
+		Rates: make(map[string]float64),
+		Base:  "EUR",
+	}
+	for rows.Next() {
+		var base, currency string
+		var rate float64
+		if err := rows.Scan(&base, &currency, &rate); err != nil {
+			log.Println("SQL_ERROR::SCAN::", err)
+			continue
+		}
+		//save it
+		rates.Base = base
+		rates.Rates[currency] = rate
+	}
+	if err := rows.Err(); err != nil {
+		log.Println("SQL_ERROR::", err)
+		return rates
+	}
+	//sounds good ;-)
+	return rates
+}
