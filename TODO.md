@@ -1,0 +1,3 @@
+
+##TODO
+env DEPNOLOCK=1 dep init -v && go test ./...
