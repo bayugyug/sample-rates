@@ -1,11 +1,13 @@
 BUILD_DATE := $(shell date +%Y-%m-%dT%H:%M:%S%z)
+BUILD_TIME := $(shell date +%Y%m%d.%H%M%S)
 BUILD_HASH := $(shell git log -1 | head -n 1 | cut -d ' ' -f 2)
+BUILD_NAME := sample-rates
 
 all: build
 
 build :
 	go get -v
-	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-X main.BuildTime=`date +%Y%m%d.%H%M%S` " .
+	CGO_ENABLED=0 GOOS=linux go build -o $(BUILD_NAME) -a -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-X main.BuildTime=$(BUILD_TIME) " .
 
 test : build
 	go test *.go > testrun.txt
@@ -20,7 +22,7 @@ testrun : clean test
 prepare : build
 
 clean:
-	rm -f sample-rates
+	rm -f $(BUILD_NAME)
 	rm -f benchmarks.xml coverage.xml vet.txt lint.txt testrun.txt
 
 re: clean all
