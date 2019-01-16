@@ -56,7 +56,7 @@ func TestHandlerLatest(t *testing.T) {
 	for _, rec := range mockLists {
 		ret, body := testRequest(t, ts, rec.Method, rec.URL, rec.Body, "")
 		if ret.StatusCode != http.StatusOK {
-			t.Fatalf("Request status:%s", ret.StatusCode)
+			t.Fatalf("Request status:%d", ret.StatusCode)
 		}
 		if err := json.Unmarshal([]byte(body), &rates); err != nil {
 			t.Fatalf("Response failed")
@@ -87,7 +87,7 @@ func TestHandlerLatestWithDate(t *testing.T) {
 	for _, rec := range mockLists {
 		ret, body := testRequest(t, ts, rec.Method, rec.URL, rec.Body, "")
 		if ret.StatusCode != http.StatusOK {
-			t.Fatalf("Request status:%s", ret.StatusCode)
+			t.Fatalf("Request status:%d", ret.StatusCode)
 		}
 		if err := json.Unmarshal([]byte(body), &rates); err != nil {
 			t.Fatalf("Response failed")
@@ -119,7 +119,7 @@ func TestHandlerLatestWithDateInvalid(t *testing.T) {
 	for _, rec := range mockLists {
 		ret, body := testRequest(t, ts, rec.Method, rec.URL, rec.Body, "")
 		if ret.StatusCode != http.StatusOK {
-			t.Fatalf("Request status:%s", ret.StatusCode)
+			t.Fatalf("Request status:%d", ret.StatusCode)
 		}
 		if err := json.Unmarshal([]byte(body), &response); err != nil {
 			t.Fatalf("Response failed")
@@ -150,7 +150,7 @@ func TestHandlerAnalyze(t *testing.T) {
 	for _, rec := range mockLists {
 		ret, body := testRequest(t, ts, rec.Method, rec.URL, rec.Body, "")
 		if ret.StatusCode != http.StatusOK {
-			t.Fatalf("Request status:%s", ret.StatusCode)
+			t.Fatalf("Request status:%d", ret.StatusCode)
 		}
 		if err := json.Unmarshal([]byte(body), &rates); err != nil {
 			t.Fatalf("Response failed")

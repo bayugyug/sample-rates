@@ -10,13 +10,16 @@ import (
 )
 
 const (
-	VERSION_MAJOR = "0.1"
-	VERSION_MINOR = "0"
+	//VersionMajor main ver no.
+	VersionMajor = "0.1"
+	//VersionMinor sub  ver no.
+	VersionMinor = "0"
 )
 
-// Versioning detail information, set during build phase.
 var (
-	BuildTime  string
+	//BuildTime pass during build time
+	BuildTime string
+	//AppVersion is the app ver string
 	AppVersion string
 )
 
@@ -25,7 +28,7 @@ func init() {
 
 	//uniqueness
 	rand.Seed(time.Now().UnixNano())
-	AppVersion = "Ver: " + VERSION_MAJOR + "." + VERSION_MINOR + "-" + BuildTime
+	AppVersion = "Ver: " + VersionMajor + "." + VersionMinor + "-" + BuildTime
 
 }
 
