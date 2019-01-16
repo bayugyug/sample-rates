@@ -23,15 +23,16 @@ func (rate *RateLatest) Get(ctx context.Context, db *sql.DB, whichdt string) *Ra
 	//run
 	if whichdt == "" {
 		r = `SELECT 
-		IFNULL(a.base,''), 
-		IFNULL(a.currency,''), 
-		IFNULL(a.rate,0.0)
-		FROM rates a
-		WHERE 1=1
-		AND a.rate_dt IN (
-			SELECT MAX(b.rate_dt) FROM rates b
-		)
-		ORDER BY a.currency ASC`
+				IFNULL(a.base,''),
+				IFNULL(a.currency,''),
+				IFNULL(a.rate,0.0)
+			FROM rates a
+			INNER JOIN (
+			  SELECT base, MAX(rate_dt) AS rate_dt
+			  FROM rates GROUP BY base
+			) AS max_rate_dt
+			USING (base, rate_dt)
+			ORDER BY currency ASC`
 		rows, err = db.QueryContext(ctx, r)
 	} else {
 		r = `SELECT 
