@@ -39,12 +39,12 @@ func (app *AppHandler) RatesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//yyyy-mm-dd
 	tdate := r.URL.Path[len("/rates/"):]
+	//per date
+	utils.Dumper("tran-date:" + tdate)
 	if !config.Settings.DateRegx.MatchString(tdate) {
 		app.Handler404(w, r)
 		return
 	}
-	//per date
-	utils.Dumper("tran-date:" + tdate)
 	app.LatestRates(w, r, tdate)
 }
 
@@ -134,4 +134,7 @@ func (app *AppHandler) MethodAllowed(w http.ResponseWriter, r *http.Request, met
 		return false
 
 	}
+}
+
+func (app *AppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }

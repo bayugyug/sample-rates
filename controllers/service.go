@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"time"
 
 	"github.com/bayugyug/sample-rates/config"
 	"github.com/bayugyug/sample-rates/driver"
@@ -97,20 +99,44 @@ func (svc *Service) PrepareRates() {
 func (svc *Service) Run() {
 
 	//routing
-	http.HandleFunc("/rates/analyze", svc.App.AnalyzeRatesHandler)
-	http.HandleFunc("/rates/analyze/", svc.App.AnalyzeRatesHandler)
-	http.HandleFunc("/rates/latest", svc.App.LatestRatesHandler)
-	http.HandleFunc("/rates/latest/", svc.App.LatestRatesHandler)
-	http.HandleFunc("/rates/", svc.App.RatesHandler)
-	http.HandleFunc("/rates", svc.App.RatesHandler)
-	http.HandleFunc("/", svc.App.WelcomeHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/rates/analyze", svc.App.AnalyzeRatesHandler)
+	mux.HandleFunc("/rates/analyze/", svc.App.AnalyzeRatesHandler)
+	mux.HandleFunc("/rates/latest", svc.App.LatestRatesHandler)
+	mux.HandleFunc("/rates/latest/", svc.App.LatestRatesHandler)
+	mux.HandleFunc("/rates/", svc.App.RatesHandler)
+	mux.HandleFunc("/rates", svc.App.RatesHandler)
+	mux.HandleFunc("/", svc.App.WelcomeHandler)
 
-	//run
-	log.Println("Listening on port ", svc.Address)
-	if err := http.ListenAndServe(svc.Address, nil); err != nil {
-		log.Printf("listen: %s\n", err)
-		os.Exit(0)
+	//gracious timing
+	srv := &http.Server{
+		Addr:         svc.Address,
+		Handler:      mux,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
+
+	//async run
+	go func() {
+		log.Println("Listening on port ", svc.Address)
+		if err := srv.ListenAndServe(); err != nil {
+			log.Printf("listen: %s\n", err)
+			os.Exit(0)
+		}
+
+	}()
+
+	//watcher
+	stopChan := make(chan os.Signal)
+	signal.Notify(stopChan, os.Interrupt)
+
+	<-stopChan
+	log.Println("Shutting down service...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	srv.Shutdown(ctx)
+	defer cancel()
+	log.Println("Server gracefully stopped!")
 
 }
 
