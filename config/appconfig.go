@@ -26,9 +26,9 @@ const (
 	usageConfig = "use to set the config file parameter with db-userinfos/http-port"
 )
 
+var BuildTime string
 var (
 	//version
-	BuildTime  = ""
 	AppVersion = "0.1.0" + "-" + BuildTime
 	Settings   *AppSettings
 )

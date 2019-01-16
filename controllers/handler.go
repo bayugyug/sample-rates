@@ -56,6 +56,10 @@ func (app *AppHandler) LatestRatesHandler(w http.ResponseWriter, r *http.Request
 	//check it
 	qpath := r.URL.Path[len("/rates/"):]
 	utils.Dumper("latest:" + qpath)
+	if !strings.EqualFold(strings.TrimSuffix(qpath, "/"), "latest") {
+		app.Handler404(w, r)
+		return
+	}
 	app.LatestRates(w, r, "")
 }
 
@@ -66,7 +70,12 @@ func (app *AppHandler) AnalyzeRatesHandler(w http.ResponseWriter, r *http.Reques
 	}
 	//check it
 	qpath := r.URL.Path[len("/rates/"):]
-	app.ReplyErrContent(w, r, http.StatusOK, "analyze:"+qpath)
+	utils.Dumper("analyze:" + qpath)
+	if !strings.EqualFold(strings.TrimSuffix(qpath, "/"), "analyze") {
+		app.Handler404(w, r)
+		return
+	}
+	app.AnalyzeRates(w, r)
 }
 
 func (app *AppHandler) Handler404(w http.ResponseWriter, r *http.Request) {

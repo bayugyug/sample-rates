@@ -46,9 +46,14 @@
 
 
 ```sh
+        #Show the latest rates
+        curl -X GET  'http://127.0.0.1:8989/rates/latest'
 
+        #Show the latest rates per date parameter
+        curl -X GET  'http://127.0.0.1:8989/rates/2019-01-14'
 
-
+        #Show the rates summary (min/max/avg)
+        curl -X GET  'http://127.0.0.1:8989/rates/analyze'
 
 ```
 
@@ -71,18 +76,18 @@
 	    
 		go test ./...
 	
-	
-```sh
+	[x] Run from the console
 
+```sh
 	./sample-rates --config '{
-							"http_port":"8989",
-								"driver":{
-								"user":"rates",
-								"pass":"rat3s",
-								"port":"3306",
-								"name":"rates",
-								"host":"127.0.0.1"},
-							"showlog":true}'
+                "http_port":"8989",
+                    "driver":{
+                    "user":"rates",
+                    "pass":"rat3s",
+                    "port":"3306",
+                    "name":"rates",
+                    "host":"127.0.0.1"},
+                "showlog":true}'
 
 
 ```

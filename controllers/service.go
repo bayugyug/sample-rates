@@ -87,17 +87,20 @@ func NewService(opts ...*config.Option) (*Service, error) {
 //PrepareRates try to load rates here
 func (svc *Service) PrepareRates() {
 	log.Println("Initializing rates")
+	log.Println("Wait please ....")
 	ret := svc.App.LoadRates()
-	log.Println("Rates initialized#",ret)
-	
+	log.Println("Rates initialized#", ret)
+
 }
+
 //Run run the http server based on settings
 func (svc *Service) Run() {
 
-
 	//routing
 	http.HandleFunc("/rates/analyze", svc.App.AnalyzeRatesHandler)
+	http.HandleFunc("/rates/analyze/", svc.App.AnalyzeRatesHandler)
 	http.HandleFunc("/rates/latest", svc.App.LatestRatesHandler)
+	http.HandleFunc("/rates/latest/", svc.App.LatestRatesHandler)
 	http.HandleFunc("/rates/", svc.App.RatesHandler)
 	http.HandleFunc("/rates", svc.App.RatesHandler)
 	http.HandleFunc("/", svc.App.WelcomeHandler)
