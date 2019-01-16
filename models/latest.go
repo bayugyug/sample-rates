@@ -25,7 +25,8 @@ func (rate *RateLatest) Get(ctx context.Context, db *sql.DB, whichdt string) *Ra
 		r = `SELECT 
 				IFNULL(a.base,''),
 				IFNULL(a.currency,''),
-				IFNULL(a.rate,0.0)
+				IFNULL(a.rate,0.0),
+				IFNULL(a.rate_dt,'')
 			FROM rates a
 			INNER JOIN (
 			  SELECT base, MAX(rate_dt) AS rate_dt
@@ -38,7 +39,8 @@ func (rate *RateLatest) Get(ctx context.Context, db *sql.DB, whichdt string) *Ra
 		r = `SELECT 
 		IFNULL(a.base,''), 
 		IFNULL(a.currency,''), 
-		IFNULL(a.rate,0.0)
+		IFNULL(a.rate,0.0),
+		IFNULL(a.rate_dt,'')
 		FROM rates a
 		WHERE 1=1
 		AND a.rate_dt = ?
@@ -56,9 +58,9 @@ func (rate *RateLatest) Get(ctx context.Context, db *sql.DB, whichdt string) *Ra
 		Base:  "EUR",
 	}
 	for rows.Next() {
-		var base, currency string
+		var base, currency, ratedt string
 		var rate float64
-		if err := rows.Scan(&base, &currency, &rate); err != nil {
+		if err := rows.Scan(&base, &currency, &rate, &ratedt); err != nil {
 			log.Println("SQL_ERROR::SCAN::", err)
 			continue
 		}
