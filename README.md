@@ -356,7 +356,7 @@
 
 ### Notes
 
-    [EUR EXCHANGE RATE](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml)
+[EUR-EXCHANGE-RATE-URL](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml)
 
 
 ### Reference
