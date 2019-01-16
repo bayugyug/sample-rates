@@ -1,8 +1,11 @@
+BUILD_DATE := $(shell date +%Y-%m-%dT%H:%M:%S%z)
+BUILD_HASH := $(shell git log -1 | head -n 1 | cut -d ' ' -f 2)
+
 all: build
 
 build :
 	go get -v
-	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-X main.BuildTime=`date +%Y%m%d.%H%M%S`" .
+	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -installsuffix netgo -installsuffix cgo -v -ldflags "-X main.BuildTime=`date +%Y%m%d.%H%M%S` " .
 
 test : build
 	go test *.go > testrun.txt

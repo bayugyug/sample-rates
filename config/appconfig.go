@@ -14,8 +14,14 @@ import (
 	"github.com/bayugyug/sample-rates/utils"
 )
 
+// Versioning detail information, set during build phase.
+var (
+	Settings *AppSettings
+)
+
 //internal system initialize
 func init() {
+
 	//uniqueness
 	rand.Seed(time.Now().UnixNano())
 
@@ -24,13 +30,6 @@ func init() {
 const (
 	//status
 	usageConfig = "use to set the config file parameter with db-userinfos/http-port"
-)
-
-var BuildTime string
-var (
-	//version
-	AppVersion = "0.1.0" + "-" + BuildTime
-	Settings   *AppSettings
 )
 
 //RateEndPoint rate url mapping
