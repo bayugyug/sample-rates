@@ -36,8 +36,8 @@
 
 	create database rates;
 	create user rates;
-	grant all privileges on rates.* to rates@localhost identified by 'xxxx';
-	grant all privileges on rates.* to rates@127.0.0.1 identified by 'xxxx';
+	grant all privileges on rates.* to rates@localhost identified by 'rxxxx';
+	grant all privileges on rates.* to rates@127.0.0.1 identified by 'rxxxx';
 	flush privileges;
 
 ```
@@ -345,7 +345,7 @@
                 "http_port":"8989",
                     "driver":{
                     "user":"rates",
-                    "pass":"rat3s",
+                    "pass":"rxxxx",
                     "port":"3306",
                     "name":"rates",
                     "host":"127.0.0.1"},
